@@ -1,0 +1,97 @@
+\documentclass[]{article}
+\usepackage{lmodern}
+\usepackage{graphicx}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\usepackage{hyperref}
+\hypersetup{unicode=true,
+            pdftitle={Homework 4},
+            pdfborder={0 0 0},
+            breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{0}
+% Redefines (sub)paragraphs to behave more like sections
+\ifx\paragraph\undefined\else
+\let\oldparagraph\paragraph
+\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+\let\oldsubparagraph\subparagraph
+\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+
+\input{preamble.tex}
+\title{Project Proposal}
+
+
+
+\begin{document}
+\maketitle
+
+
+\subsection{Proposal}\label{Potential risks:}
+\begin{enumerate}
+\item 
+What is the problem you are trying to solve?
+How is it done today? E.g., what is a good baseline (which could be done manually, but explain what this means.)\\
+\textbf{Answer:}\\ \textit{Problem:} To predict if movies review is either negative or positive.\\
+Some systems simply identify words in isolation, assign positive weight for words and sum up the weight to give prediction about the review. Other systems have human experts to classify the negative and positive feedback. 
+\item What is your approach, and why do you think it will be successful?\\
+\textbf{Answer:}\\ a naive way to solve the problem is to use text categorization techniques (i.e. methods mentioned in classes: SVM, K-nearest neighbors, Naive Bayes) to predict outcome of a movie review (i.e. negative or positive.). We might add some \\
+Text categorization techniques are well-suited for this problem because the idea of text classifier is to process document, extract its feature, and tell us which class document belongs to.
+\item How long will it take? Include a brief timeline for what you expect to have done when - at least include a mid-April ``progress check". Also describe potential roadblocks/risks and how you will mitigate those risks.
+\\\textbf{Answer:}
+4 weeks:
+\begin{itemize}
+   \item Week 1: Implement one or two of text classifier algorithms like Naive Bayes to test our dataset.
+   \item Week 2,3: finding different ways to improve our approach (i.e by using different online library like wordnet to identify negative/positive words.) 
+   \item Week 4: Finish project, implement somekind of GUI for testing purpose.
+\end{itemize}  
+\textit{Potential risks:} some reviews might have some hidden meaning that difficult to detect. Or review contains lots of positive words, but can be a negative review.\\
+To fix this, I can implement different approaches like text clurstering, or finds a more recent approaches to the problem (i.e. different learning techniques, using online library about sentiment lexicons.)
+
+\item What is the measure for success? In other words, how will you measure how well you've solved the problem you defined?
+\\\textbf{Answer:}\\ 
+To measure how well the approach solves the problem:
+\begin{itemize}
+\item \textit{Training set: movie review dataset provided by Cornell University}
+\item \textit{Metrics: Precision/Recall/F1 Measure}
+\item Cross-Validation: split training set into training and test set.
+\item Choosing an unseen test set to test on our training set. 
+\end{itemize}
+
+\item How will YOU be evaluated - what are the deliverables? Possibilities could include a web-accessible system that can be tested, an on-line live system demonstration, a written report, a (taped) oral presentation, or some combination of the above.
+\\\textbf{Answer:}
+To evaluate my approach, I will provide a written report of the result. Also, if possible, I will provide some access to test the perfomance of my implementation.
+\end{enumerate}
+
+\end{document}
