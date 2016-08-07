@@ -1,0 +1,187 @@
+\documentclass[]{article}
+\usepackage{lmodern}
+\usepackage{graphicx}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\usepackage{graphicx}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\usepackage{hyperref}
+\hypersetup{unicode=true,
+            pdftitle={Homework 4},
+            pdfborder={0 0 0},
+            breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{0}
+% Redefines (sub)paragraphs to behave more like sections
+\ifx\paragraph\undefined\else
+\let\oldparagraph\paragraph
+\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+\let\oldsubparagraph\subparagraph
+\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+\input{preamble.tex}
+\title{Project Report}
+
+
+
+\begin{document}
+\maketitle
+
+\subsection{1. Introduction}\label{Introduction}
+The purpose of this project is to understand polarity of a given text. More specific, this project tries to identify whether the author of a given review expresses
+positive or negative option.
+\subsection{2. Methodology}\label{Methodology}
+\subsubsection{2.1 Data sources}
+\begin{enumerate}
+	\item \textbf{Movie Review Datasets}: 
+	For this project, I used the movie reviews data source provided by Cornell University which can be found in the following links:
+	\begin{itemize}
+		\item Training: \href{https://www.cs.cornell.edu/people/pabo/movie-review-data/}{Cornell Dataset} contains 1000 negative reviews, 1000 positive reviews.
+		\item Test:     \href{http://ai.stanford.edu/~amaas/data/sentiment/}{Stanford's large Dataset} contains 12500 negative reviews, 12500 positive reviews.
+	\end{itemize} 
+	\item \textbf{Positive/Negative word dataset}:
+	Also, for sentiment analysis, the use of positive/negative meaning of a word might improve the performance of the algorithm. Therefore, I chose the dataset provided by Harvard University for positive/negative meaning of the words:
+	\begin{itemize}
+	 	\item http://www.wjh.harvard.edu/~inquirer/homecat.htm
+	\end{itemize} 
+\end{enumerate}
+\subsubsection{2.2 Tools}
+I use $Indri$ tool to exact and tokenize the vocabulary of our corpus and use $Julia$ to perform calculations. 
+\subsubsection{2.3 Algorithm}
+\begin{enumerate}
+	\item 
+ 	\textbf{Multinomial Naive Bayes}: is used to classify movie's review into classes  (negative ($c_{neg}$) ore positive ($c_{pos}$)).\\
+	To train our Naive Bayes, we use dataset that contains $1000$ negative reviews and $1000$ positive reviews\\
+	To classify a review, for given word all word $w_i$ at position $i$ in a review $r$, the class of the review is:\\
+		\begin{equation*}
+		 	\begin{split}
+		 		c_{NB} = \underset{k \in \{neg,pos\}}{argmax} P(c_{k})\prod P(w_i|c_{k})
+		 	\end{split}
+	 	\end{equation*}
+	 where $P(w_i|c) = \displaystyle \frac{count(w_i,c)+1}{\sum_{w\in {V}}(count(w,c)+1)}$ and $count(w_i,c)$ is term frequency of words in the same class, $count(w_i,c)$ is the total number of tokens in the same class, and $V$ is the vocabulary of our training set.\\
+	 
+	 For further references please follow this \href{http://nlp.stanford.edu/IR-book/html/htmledition/naive-bayes-text-classification-1.html}{\textit{link}}
+	\item 
+	 \textbf{Proposed modifications to improve performance of Naive Bayes}
+		\begin{enumerate}
+			\item \textbf{Using document frequency: } This modifications is also known as \textit{Binarized Multinomial Naive Bayes}. Instead of using term frequency like in Multinomial Naive Bayes, we use document frequency in the class (i.e $count(w,c)$ becomes document frequency). The intuition behind is that multiple appearance of same words in one review doesn't tell us much about the effect but the appearance across the documents seems to be better choice. 
+			\item \textbf{Upshooting positive/negative words:} while some words has little meaning for our analysis (i.e yours, her), some other words with positive/negative meaning (i.e worse, amazing) tell lots of information about certain review. Thus, the intuition is to upweight the propability of certain words given class using upweight parameter $\alpha$. For this project, we choose $\alpha = 2$
+		\end{enumerate}
+\end{enumerate}
+
+\subsubsection{2.4 Evaluation}
+\begin{enumerate}
+	\item \textbf{Test Set} we use test set of size 25000 reviews, we will use our propose algorithm to evaluate an unseen test set of $200$, $800$, $1600$, $3200$.$6400$,$12000$ movies reviews on which half of them are negative and positive.
+	\item \textbf{Evaluation Metrics}: For each method, we will compute the micro-averaging table and compute the \textit{Accuracy} to evaluate performance of algorithm with/without modification.
+\end{enumerate}
+\subsection{3. Result}\label{Result}
+% \begin{enumerate}
+% 	\item \textbf{Multinomial Naive Bayes (MNB)}\\
+% 	Micro-Averaging Table:
+% 	\begin{center}
+% 		\begin{tabular}{c | c c}
+% 			\hline 	 		       & True & False \\ 
+% 			\hline Classifier: Yes & 1154 & 246   \\ 
+% 			 	    Classifier: No & 246  & 1154  \\ \hline
+% 		\end{tabular}
+% 	\end{center}
+% 	$Accuracy =\displaystyle \frac{1154\times2}{2800} = .824$
+% 	\item \textbf{Binarized Multinomial Bayes (Using DF):} \\
+% 	Micro-Averaging Table:
+% 	\begin{center}
+% 		\begin{tabular}{c | c c}
+% 			\hline 	 		       & True & False \\ 
+% 			\hline Classifier: Yes & 1235 & 165   \\ 
+% 			 	    Classifier: No & 165  & 1235  \\ \hline
+% 		\end{tabular}
+% 	\end{center}
+% 	$Accuracy =\displaystyle \frac{1235\times2}{2800} = .882$
+% 	\item \textbf{Upweight Negative/Positive Words (UPB):}\\ We double the probabilty of negative word and positive words given document (upweight parameter $\alpha = 2$).\\
+% 	Micro-Averaging Table:
+% 	\begin{center}
+% 		\begin{tabular}{c | c c}
+% 			\hline 	 		       & True & False \\ 
+% 			\hline Classifier: Yes & 1190 & 210   \\ 
+% 			 	    Classifier: No & 210  & 1190  \\ \hline
+% 		\end{tabular}
+% 	\end{center}
+% 	$Accuracy =\displaystyle \frac{1190\times2}{2800} = .85$
+% 	\item \textbf{Combine Binarized NB and Upweight term:} \\
+% 	Micro-Averaging Table:
+% 	\begin{center}
+% 		\begin{tabular}{c | c c}
+% 			\hline 	 		       & True & False \\ 
+% 			\hline  Classifier: Yes & 1251 & 149   \\ 
+% 			 	    Classifier: No & 149  & 1251  \\ \hline
+% 		\end{tabular}
+% 	\end{center}
+% 	$Accuracy =\displaystyle \frac{1190\times2}{2800} = .893$
+% \end{enumerate}
+We consider 4 of these methods:
+\begin{enumerate}
+	\item Multinormial Naieve Bayes (NB)
+	\item Binarized Multinormial Naive Bayes (BNB)
+	\item Multinormial Naive Bayes with upweighting (UNB)
+	\item Combine both modifications (CNB)
+\end{enumerate}
+Using accuracy score to evaluate each methods on different test sets we have:
+\begin{center}
+	\begin{tabular}{c|ccccccc}
+	Number of review		& 200 & 800 & 1600 & 3200 & 6400 & 12000\\ \hline
+	NB      &  .695  & .676  & .642  & .622 	&   .614 & .616\\
+	BNB     &  .765  & .771  & .733  & .714 	&	.703 & .711\\ 
+	UNB     &  .790   & .760 & .710  & .700 	&  	.708 & .709\\ 
+	CNB     &  .840   & .830 & .799  & .789 	&	.794 & .793\\ 
+	\end{tabular}
+\end{center}
+Accuracy graph:\\
+\includegraphics[width =\textwidth]{accuracy.pdf}
+\subsection{4. Conclusion}\label{Result}
+In general, Naive Bayes is good baseline algorithm for sentiment analysis of movie review. Without modifications, Naive Bayes can attain the accuracy of $\approx 62\%$ on average.\\ 
+With modification like using boolean Multinomial and upweighting important words, we are able to tune up the performance of Naive Bayes by about $10\%$. With bigger test set, all methods seems to decrease in accuracy; however, combined Naive Bayes seems pretty stable with larger test set. 
+Thus, the advantages of Naive Bayes are:
+\begin{itemize}
+	\item Easy and fast to train.
+	\item Require small storage space.
+	\item With big enough data set, Naive Bayes perform well. Modified Naive Bayes can achieve 89\% of accuracy on small given test set that similar to training set.
+\end{itemize}
+However, there are some drawbacks of naive Bayes: 
+\begin{itemize}
+	\item The algorithm ignores the importance of position of words and 
+	\item Naive Bayes assumes that each word are independent relationship with each other in the text which is no true in reality.
+	\item Cannot identify the hidden meaning of the text.
+\end{itemize}
+Thus, we can address these problem with different learning models such as SVM or Maximum Entropy. However, Naive Bayes 
+\vfill
+\subsection{Reference}\label{Introduction}
+Christopher D. Manning, Prabhakar Raghavan, and Hinrich Schütze. 2008. \textit{Introduction to Information Retrieval}. Cambridge University Press, New York, NY, USA.
+\end{document}
