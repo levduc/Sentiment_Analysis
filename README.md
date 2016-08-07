@@ -1,1 +1,1 @@
-# movie_review_evaluations
+# sentiment analysis for movie reviews
